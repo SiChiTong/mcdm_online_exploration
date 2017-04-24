@@ -11,7 +11,7 @@ Criteria/criterioncomparator.cpp Criteria/criterion.cpp  )
 
 #Find all the files link them to the executable (for qtcreator)
 FILE(GLOB_RECURSE HEADER_FILES include *.h)
-add_executable(mcdm_online_exploration_unknown main_marco.cpp)
+add_executable(mcdm_online_exploration_unknown main.cpp)
 target_link_libraries(mcdm_online_exploration_unknown lib)
 
 install(TARGETS mcdm_online_exploration_unknown RUNTIME DESTINATION bin)
