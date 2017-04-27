@@ -7,7 +7,7 @@
 # define PI           3.14159265358979323846  /* pi */
 
 
-  
+
 NewRay::NewRay()
 {
 }
@@ -55,10 +55,10 @@ int NewRay::isCandidate2(const Map &map, long i, long j)
     {
       for(int rg = r*gridToPathGridScale; rg < r*gridToPathGridScale + gridToPathGridScale; ++rg)
       {
-	for(int sg = s*gridToPathGridScale; sg < s*gridToPathGridScale + gridToPathGridScale; ++sg)
-	{
-	  if (map.getGridValue(rg, sg) == 0) candidate = 1;
-	}
+        for(int sg = s*gridToPathGridScale; sg < s*gridToPathGridScale + gridToPathGridScale; ++sg)
+        {
+          if (map.getGridValue(rg, sg) == 0) candidate = 1;
+        }
       }
     }
   }
@@ -76,21 +76,21 @@ void NewRay::findCandidatePositions(Map &map, long posX, long posY, int orientat
   NewRay::gridToPathGridScale = map.getGridToPathGridScale();
   
   //set the correct FOV orientation
-  double startingPhi = orientation*PI/180 - FOV/2;	
+  double startingPhi = orientation*PI/180 - FOV/2;
   double endingPhi = orientation*PI/180 + FOV/2;
   int add2pi = 0;
   
-  if(startingPhi <= 0) 
+  if(startingPhi <= 0)
   {
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
     endingPhi = 2*PI + endingPhi;
     
   }
-  if(endingPhi > 2*PI) add2pi = 1;  
+  if(endingPhi > 2*PI) add2pi = 1;
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-    
+
   //select the portion of map to be scanned
   long minI = posX - range;
   long maxI = posX + range;
@@ -114,61 +114,61 @@ void NewRay::findCandidatePositions(Map &map, long posX, long posY, int orientat
       //if a cell is a candidate one and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getPathPlanningGridValue(i, j) == 2 && distance <= range)
       {
-	
-	if(NewRay::isCandidate(map, i, j) == 1)
-	{
-	
-	double curX = posX;		//starting position of the ray
-	double curY = posY;
-	double robotX = posX;		//position of the robot
-	double robotY = posY;
-	
-	double convertedI = NewRay::convertPointPP(i);
-	double convertedRX = NewRay::convertPointPP(robotX);
 
-	double slope = atan2(NewRay::convertPointPP(i) - NewRay::convertPointPP(robotX), j - robotY);	//calculate the slope of the ray with atan2
-	
-	if(slope <= 0 && add2pi == 0) slope = slope + 2*PI; 
-	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
-	
-	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-	
-	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
-	{
-	  //raycounter++;
-	  //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
-	  
-	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
-	  double u = 0;			//current position along the ray
-	  
-	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
-	  {
-	    
-	    //convert the position on the ray to cell coordinates to check the grid
-	    curY = robotY + 0.5 + u*cos(slope);
-	    curX = robotX + 0.5 - u*sin(slope);
-	    
-	    //not needed, but left anyway
-	    if(curX < 0 || curX > map.getPathPlanningNumRows() || curY < 0 || curY > map.getPathPlanningNumCols()) hit = 1;        
-      
-	    if(map.getPathPlanningGridValue((long)curX, (long)curY) == 1) 
-	    {
-	      hit = 1;		//hit set to 1 if an obstacle is found
-	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
-	    }
-	    
-	    
-	    if((long)curX == i && (long)curY == j)	//if the free cell is reached, save it as edge point and stop the ray.
-	    {
-	      std::pair<long,long> temp = std::make_pair(i, j);
-	      NewRay::edgePoints.push_back(temp);
-	      //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
-	      hit = 1;
-	    }
-	    u += 0.2;		//move forward along the ray
-	  }
-	}
-	}
+        if(NewRay::isCandidate(map, i, j) == 1)
+        {
+
+          double curX = posX;		//starting position of the ray
+          double curY = posY;
+          double robotX = posX;		//position of the robot
+          double robotY = posY;
+
+          double convertedI = NewRay::convertPointPP(i);
+          double convertedRX = NewRay::convertPointPP(robotX);
+
+          double slope = atan2(NewRay::convertPointPP(i) - NewRay::convertPointPP(robotX), j - robotY);	//calculate the slope of the ray with atan2
+
+          if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+          if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+          //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+          if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+          {
+            //raycounter++;
+            //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+            int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+            double u = 0;			//current position along the ray
+
+            while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+            {
+
+              //convert the position on the ray to cell coordinates to check the grid
+              curY = robotY + 0.5 + u*cos(slope);
+              curX = robotX + 0.5 - u*sin(slope);
+
+              //not needed, but left anyway
+              if(curX < 0 || curX > map.getPathPlanningNumRows() || curY < 0 || curY > map.getPathPlanningNumCols()) hit = 1;
+
+              if(map.getPathPlanningGridValue((long)curX, (long)curY) == 1)
+              {
+                hit = 1;		//hit set to 1 if an obstacle is found
+                //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+              }
+
+
+              if((long)curX == i && (long)curY == j)	//if the free cell is reached, save it as edge point and stop the ray.
+              {
+                std::pair<long,long> temp = std::make_pair(i, j);
+                NewRay::edgePoints.push_back(temp);
+                //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
+                hit = 1;
+              }
+              u += 0.2;		//move forward along the ray
+            }
+          }
+        }
       }
     }
   }
@@ -183,21 +183,21 @@ void NewRay::findCandidatePositions2(Map &map, long posX, long posY, int orienta
   NewRay::gridToPathGridScale = map.getGridToPathGridScale();
   
   //set the correct FOV orientation
-  double startingPhi = orientation*PI/180 - FOV/2;	
+  double startingPhi = orientation*PI/180 - FOV/2;
   double endingPhi = orientation*PI/180 + FOV/2;
   int add2pi = 0;
   
-  if(startingPhi <= 0) 
+  if(startingPhi <= 0)
   {
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
     endingPhi = 2*PI + endingPhi;
     
   }
-  if(endingPhi > 2*PI) add2pi = 1;  
+  if(endingPhi > 2*PI) add2pi = 1;
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-    
+
   //select the portion of map to be scanned
   long minI = posX - range;
   long maxI = posX + range;
@@ -221,61 +221,61 @@ void NewRay::findCandidatePositions2(Map &map, long posX, long posY, int orienta
       //if a cell is a candidate one and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getPathPlanningGridValue(i, j) == 2 && distance <= range)
       {
-	
-	if(NewRay::isCandidate2(map, i, j) == 1)
-	{
-	
-	double curX = posX;		//starting position of the ray
-	double curY = posY;
-	double robotX = posX;		//position of the robot
-	double robotY = posY;
-	
-	double convertedI = NewRay::convertPointPP(i);
-	double convertedRX = NewRay::convertPointPP(robotX);
 
-	double slope = atan2(NewRay::convertPointPP(i) - NewRay::convertPointPP(robotX), j - robotY);	//calculate the slope of the ray with atan2
-	
-	if(slope <= 0 && add2pi == 0) slope = slope + 2*PI; 
-	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
-	
-	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-	
-	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
-	{
-	  //raycounter++;
-	  //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
-	  
-	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
-	  double u = 0;			//current position along the ray
-	  
-	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
-	  {
-	    
-	    //convert the position on the ray to cell coordinates to check the grid
-	    curY = robotY + 0.5 + u*cos(slope);
-	    curX = robotX + 0.5 - u*sin(slope);
-	    
-	    //not needed, but left anyway
-	    if(curX < 0 || curX > map.getPathPlanningNumRows() || curY < 0 || curY > map.getPathPlanningNumCols()) hit = 1;        
-      
-	    if(map.getPathPlanningGridValue((long)curX, (long)curY) == 1) 
-	    {
-	      hit = 1;		//hit set to 1 if an obstacle is found
-	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
-	    }
-	    
-	    
-	    if((long)curX == i && (long)curY == j)	//if the free cell is reached, save it as edge point and stop the ray.
-	    {
-	      std::pair<long,long> temp = std::make_pair(i, j);
-	      NewRay::edgePoints.push_back(temp);
-	      //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
-	      hit = 1;
-	    }
-	    u += 0.2;		//move forward along the ray
-	  }
-	}
-	}
+        if(NewRay::isCandidate2(map, i, j) == 1)
+        {
+
+          double curX = posX;		//starting position of the ray
+          double curY = posY;
+          double robotX = posX;		//position of the robot
+          double robotY = posY;
+
+          double convertedI = NewRay::convertPointPP(i);
+          double convertedRX = NewRay::convertPointPP(robotX);
+
+          double slope = atan2(NewRay::convertPointPP(i) - NewRay::convertPointPP(robotX), j - robotY);	//calculate the slope of the ray with atan2
+
+          if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+          if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+          //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+          if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+          {
+            //raycounter++;
+            //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+            int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+            double u = 0;			//current position along the ray
+
+            while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+            {
+
+              //convert the position on the ray to cell coordinates to check the grid
+              curY = robotY + 0.5 + u*cos(slope);
+              curX = robotX + 0.5 - u*sin(slope);
+
+              //not needed, but left anyway
+              if(curX < 0 || curX > map.getPathPlanningNumRows() || curY < 0 || curY > map.getPathPlanningNumCols()) hit = 1;
+
+              if(map.getPathPlanningGridValue((long)curX, (long)curY) == 1)
+              {
+                hit = 1;		//hit set to 1 if an obstacle is found
+                //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+              }
+
+
+              if((long)curX == i && (long)curY == j)	//if the free cell is reached, save it as edge point and stop the ray.
+              {
+                std::pair<long,long> temp = std::make_pair(i, j);
+                NewRay::edgePoints.push_back(temp);
+                //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
+                hit = 1;
+              }
+              u += 0.2;		//move forward along the ray
+            }
+          }
+        }
       }
     }
   }
@@ -298,9 +298,9 @@ void NewRay::emptyCandidatePositions()
 //ATTENTION: in order to optimize the computing time, this method should be fused with the information gain one
 std::pair<double,double> NewRay::getSensingTime(const Map &map, long posX,long posY, int orientation, double FOV, int range)
 {
-    
+
   NewRay::numGridRows = map.getNumGridRows();
-    setGridToPathGridScale(map.getGridToPathGridScale());
+  setGridToPathGridScale(map.getGridToPathGridScale());
 
   
   double minPhi = 0;	//slope of the first ray required
@@ -308,11 +308,11 @@ std::pair<double,double> NewRay::getSensingTime(const Map &map, long posX,long p
   int phiFound = 0;	//set to 1 if at least a cell can be scanned
   
   //set the correct FOV orientation
-  double startingPhi = orientation*PI/180 - FOV/2;	
+  double startingPhi = orientation*PI/180 - FOV/2;
   double endingPhi = orientation*PI/180 + FOV/2;
   int add2pi = 0;
   
-  if(startingPhi <= 0) 
+  if(startingPhi <= 0)
   {
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
@@ -322,7 +322,7 @@ std::pair<double,double> NewRay::getSensingTime(const Map &map, long posX,long p
   if(endingPhi > 2*PI) add2pi = 1;
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-    
+
   //select the portion of map to be scanned
   long minI = posX*gridToPathGridScale + gridToPathGridScale/2 - range*gridToPathGridScale;
   long maxI = posX*gridToPathGridScale + gridToPathGridScale/2 + range*gridToPathGridScale;
@@ -345,62 +345,62 @@ std::pair<double,double> NewRay::getSensingTime(const Map &map, long posX,long p
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
       {
-	double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
-	double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
-	double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	
-	double convertedI = NewRay::convertPoint(i);
-	double convertedRX = NewRay::convertPoint(robotX);
+        double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
+        double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
+        double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
+        double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
 
-	double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
-	
-	if(slope <= 0 && add2pi == 0) slope = slope + 2*PI; 
-	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
-	
-	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+        double convertedI = NewRay::convertPoint(i);
+        double convertedRX = NewRay::convertPoint(robotX);
 
-	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
-	{
-	  //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
-	  
-	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
-	  double u = 0;			//current position along the ray
-	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
-	  {
-	    
-	    //convert the position on the ray to cell coordinates to check the grid
-	    curY = robotY + 0.5 + u*cos(slope);
-	    curX = robotX + 0.5 - u*sin(slope);
-	    
-	    //not needed, but left anyway
-	    if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;        
-      
-	    if(map.getGridValue((long)curX, (long)curY) == 1) 
-	    {
-	      hit = 1;		//hit set to 1 if an obstacle is found
-	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
-	    }
+        double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
 
-	    if((long)curX == i && (long)curY == j)	//free cell reached, check if the slope is a candidate for first or last ray
-	    {
-	      if(phiFound == 0)		//enters if it is the first free cell found
-	      {
-		phiFound = 1;
-		minPhi = slope;
-		maxPhi = slope;
-	      }
-	      if(phiFound == 1)
-	      {
-		if(slope < minPhi) minPhi = slope;
-		if(slope > maxPhi) maxPhi = slope;
-	      }
-	      
-	      hit = 1;
-	    }
-	    u += 0.2;		//move forward along the ray
-	  }
-	}
+        if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+        if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+        //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+        if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+        {
+          //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+          int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+          double u = 0;			//current position along the ray
+          while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+          {
+
+            //convert the position on the ray to cell coordinates to check the grid
+            curY = robotY + 0.5 + u*cos(slope);
+            curX = robotX + 0.5 - u*sin(slope);
+
+            //not needed, but left anyway
+            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+
+            if(map.getGridValue((long)curX, (long)curY) == 1)
+            {
+              hit = 1;		//hit set to 1 if an obstacle is found
+              //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+            }
+
+            if((long)curX == i && (long)curY == j)	//free cell reached, check if the slope is a candidate for first or last ray
+            {
+              if(phiFound == 0)		//enters if it is the first free cell found
+              {
+                phiFound = 1;
+                minPhi = slope;
+                maxPhi = slope;
+              }
+              if(phiFound == 1)
+              {
+                if(slope < minPhi) minPhi = slope;
+                if(slope > maxPhi) maxPhi = slope;
+              }
+
+              hit = 1;
+            }
+            u += 0.2;		//move forward along the ray
+          }
+        }
       }
     }
   }
@@ -409,37 +409,37 @@ std::pair<double,double> NewRay::getSensingTime(const Map &map, long posX,long p
   /*
   if(phiFound == 0) return -1;		//return -1 if no free cells can be scanned
   else 					//return the correct FOV (ALWAYS CENTERED ON THE ORIENTATION)
-  { 
+  {
     if(minPhi - startingPhi <= endingPhi - maxPhi) value = (endingPhi - startingPhi - 2*(minPhi - startingPhi));
-	else value = (endingPhi - startingPhi - 2*(endingPhi - maxPhi));
+  else value = (endingPhi - startingPhi - 2*(endingPhi - maxPhi));
   }
   
   //std::cout << "startingPhi " << startingPhi << " endingPhi " << endingPhi << " minPhi " << minPhi << " maxPhi " << maxPhi << std::endl;
   
   return value;
   */
-   // return sensingTime;
-   std::pair<double, double> angles;
-   angles.first = minPhi;
-   angles.second = maxPhi;
-   return angles;
+  // return sensingTime;
+  std::pair<double, double> angles;
+  angles.first = minPhi;
+  angles.second = maxPhi;
+  return angles;
 }
 
 
 //perform the sensing operation by setting the value of the free cell scanned to 2
 int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int orientation, double FOV, int range, double firstAngle, double lastAngle)
 {
-    
+
   NewRay::numGridRows = map.getNumGridRows();
   setGridToPathGridScale(map.getGridToPathGridScale());
   int counter = 0;
   
   //set the correct FOV orientation
-  double startingPhi = firstAngle; //orientation*PI/180 - FOV/2;	
+  double startingPhi = firstAngle; //orientation*PI/180 - FOV/2;
   double endingPhi = lastAngle; //orientation*PI/180 + FOV/2;
   int add2pi = 0;
   
-  if(startingPhi <= 0) 
+  if(startingPhi <= 0)
   {
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
@@ -449,7 +449,7 @@ int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int o
   if(endingPhi > 2*PI) add2pi = 1;
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-    
+
   //select the portion of map to be scanned
   long minI = posX*gridToPathGridScale + gridToPathGridScale/2 - range*gridToPathGridScale;
   long maxI = posX*gridToPathGridScale + gridToPathGridScale/2 + range*gridToPathGridScale;
@@ -472,54 +472,54 @@ int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int o
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
       {
-	double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
-	double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
-	double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	
-	double convertedI = NewRay::convertPoint(i);
-	double convertedRX = NewRay::convertPoint(robotX);
+        double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
+        double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
+        double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
+        double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
 
-	double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
-	
-	if(slope <= 0 && add2pi == 0) slope = slope + 2*PI; 
-	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
-	
-	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+        double convertedI = NewRay::convertPoint(i);
+        double convertedRX = NewRay::convertPoint(robotX);
 
-	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
-	{
-	  //raycounter++;
-	  //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
-	  
-	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
-	  double u = 0;			//current position along the ray
-	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
-	  {
-	    
-	    //convert the position on the ray to cell coordinates to check the grid
-	    curY = robotY + 0.5 + u*cos(slope);
-	    curX = robotX + 0.5 - u*sin(slope);
-	    
-	    //not needed, but left anyway
-	    if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;        
-      
-	    if(map.getGridValue((long)curX, (long)curY) == 1) 
-	    {
-	      hit = 1;		//hit set to 1 if an obstacle is found
-	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
-	    }
+        double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
 
-	    if((long)curX == i && (long)curY == j)	//if the free cell is reached, set its value to 2 and stop the ray
-	    {
-	      map.setGridValue(2, i, j);
-	      counter++;
-	      //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
-	      hit = 1;
-	    }
-	    u += 0.2;		//move forward along the ray
-	  }
-	}
+        if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+        if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+        //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+        if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+        {
+          //raycounter++;
+          //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+          int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+          double u = 0;			//current position along the ray
+          while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+          {
+
+            //convert the position on the ray to cell coordinates to check the grid
+            curY = robotY + 0.5 + u*cos(slope);
+            curX = robotX + 0.5 - u*sin(slope);
+
+            //not needed, but left anyway
+            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+
+            if(map.getGridValue((long)curX, (long)curY) == 1)
+            {
+              hit = 1;		//hit set to 1 if an obstacle is found
+              //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+            }
+
+            if((long)curX == i && (long)curY == j)	//if the free cell is reached, set its value to 2 and stop the ray
+            {
+              map.setGridValue(2, i, j);
+              counter++;
+              //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
+              hit = 1;
+            }
+            u += 0.2;		//move forward along the ray
+          }
+        }
       }
     }
   }
@@ -530,17 +530,17 @@ int NewRay::performSensingOperation(dummy::Map &map, long posX, long posY, int o
 //perform the sensing operation by setting the value of the free cell scanned to 2
 void NewRay::lidarScan(dummy::Map &map, long posX, long posY, int orientation, double lidarFOV, int lidarRange)
 {
-    
+
   NewRay::numGridRows = map.getNumGridRows();
   setGridToPathGridScale(map.getGridToPathGridScale());
   int counter = 0;
   
   //set the correct FOV orientation
-  double startingPhi = orientation*PI/180 - lidarFOV/2;	
+  double startingPhi = orientation*PI/180 - lidarFOV/2;
   double endingPhi = orientation*PI/180 + lidarFOV/2;
   int add2pi = 0;
   
-  if(startingPhi <= 0) 
+  if(startingPhi <= 0)
   {
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
@@ -550,7 +550,7 @@ void NewRay::lidarScan(dummy::Map &map, long posX, long posY, int orientation, d
   if(endingPhi > 2*PI) add2pi = 1;
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-    
+
   //select the portion of map to be scanned
   long minI = posX*gridToPathGridScale + gridToPathGridScale/2 - lidarRange*gridToPathGridScale;
   long maxI = posX*gridToPathGridScale + gridToPathGridScale/2 + lidarRange*gridToPathGridScale;
@@ -573,54 +573,54 @@ void NewRay::lidarScan(dummy::Map &map, long posX, long posY, int orientation, d
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getGridValue(i, j) == -1 && distance <= lidarRange*gridToPathGridScale)
       {
-	double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
-	double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
-	double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	
-	double convertedI = NewRay::convertPoint(i);
-	double convertedRX = NewRay::convertPoint(robotX);
+        double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
+        double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
+        double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
+        double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
 
-	double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
-	
-	if(slope <= 0 && add2pi == 0) slope = slope + 2*PI; 
-	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
-	
-	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+        double convertedI = NewRay::convertPoint(i);
+        double convertedRX = NewRay::convertPoint(robotX);
 
-	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
-	{
-	  //raycounter++;
-	  //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
-	  
-	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
-	  double u = 0;			//current position along the ray
-	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
-	  {
-	    //convert the position on the ray to cell coordinates to check the grid
-	    curY = robotY + 0.5 + u*cos(slope);
-	    curX = robotX + 0.5 - u*sin(slope);
-	    
-	    //not needed, but left anyway
-	    if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;        
-      
-	    if(map.getEnvGridValue((long)curX, (long)curY) == 1) 
-	    {
-	      hit = 1;		//hit set to 1 if an obstacle is found
-	      map.setGridValue(map.getEnvGridValue(i, j), i, j);
-	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
-	    }
+        double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
 
-	    if((long)curX == i && (long)curY == j)	//if the free cell is reached, set its value to 2 and stop the ray
-	    {
-	      map.setGridValue(map.getEnvGridValue(i, j), i, j);
-	      counter++;
-	      //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
-	      hit = 1;
-	    }
-	    u += 0.2;		//move forward along the ray
-	  }
-	}
+        if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+        if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+        //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+        if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+        {
+          //raycounter++;
+          //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+          int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+          double u = 0;			//current position along the ray
+          while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+          {
+            //convert the position on the ray to cell coordinates to check the grid
+            curY = robotY + 0.5 + u*cos(slope);
+            curX = robotX + 0.5 - u*sin(slope);
+
+            //not needed, but left anyway
+            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+
+            if(map.getEnvGridValue((long)curX, (long)curY) == 1)
+            {
+              hit = 1;		//hit set to 1 if an obstacle is found
+              map.setGridValue(map.getEnvGridValue(i, j), i, j);
+              //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+            }
+
+            if((long)curX == i && (long)curY == j)	//if the free cell is reached, set its value to 2 and stop the ray
+            {
+              map.setGridValue(map.getEnvGridValue(i, j), i, j);
+              counter++;
+              //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
+              hit = 1;
+            }
+            u += 0.2;		//move forward along the ray
+          }
+        }
       }
     }
   }
@@ -646,11 +646,11 @@ int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int 
   NewRay::numGridRows = map.getNumGridRows();
   
   //set the correct FOV orientation
-  double startingPhi = orientation*PI/180 - FOV/2;	
+  double startingPhi = orientation*PI/180 - FOV/2;
   double endingPhi = orientation*PI/180 + FOV/2;
   int add2pi = 0;
   
-  if(startingPhi <= 0) 
+  if(startingPhi <= 0)
   {
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
@@ -660,7 +660,7 @@ int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int 
   if(endingPhi > 2*PI) add2pi = 1;
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-    
+
   //select the portion of map to be scanned
   long minI = posX*gridToPathGridScale + gridToPathGridScale/2 - range*gridToPathGridScale;
   long maxI = posX*gridToPathGridScale + gridToPathGridScale/2 + range*gridToPathGridScale;
@@ -682,64 +682,64 @@ int NewRay::getInformationGain(const dummy::Map &map, long posX, long posY, int 
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getGridValue(i, j) == 0 && distance <= range*gridToPathGridScale)
       {
-	double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
-	double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
-	double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
-	
-	double convertedI = NewRay::convertPoint(i);
-	double convertedRX = NewRay::convertPoint(robotX);
+        double curX = posX*gridToPathGridScale + gridToPathGridScale/2;		//starting position of the ray
+        double curY = posY*gridToPathGridScale + gridToPathGridScale/2;
+        double robotX = posX*gridToPathGridScale + gridToPathGridScale/2;		//position of the robot
+        double robotY = posY*gridToPathGridScale + gridToPathGridScale/2;
 
-	double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
-	
-	if(slope <= 0 && add2pi == 0) slope = slope + 2*PI; 
-	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
-	
-	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+        double convertedI = NewRay::convertPoint(i);
+        double convertedRX = NewRay::convertPoint(robotX);
 
-	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
-	{
-	  //raycounter++;
-	  //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
-	  
-	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
-	  double u = 0;			//current position along the ray
-	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
-	  {
-	    
-	    //convert the position on the ray to cell coordinates to check the grid
-	    curY = robotY + 0.5 + u*cos(slope);
-	    curX = robotX + 0.5 - u*sin(slope);
-	    
-	    //not needed, but left anyway
-	    if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols())
-	    {
-	      hit = 1;
-	      //break;
-	    }
-      
-	    if(map.getGridValue((long)curX, (long)curY) == 1) 
-	    {
-	      hit = 1;		//hit set to 1 if an obstacle is found
-	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
-	    }
+        double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
 
-	    if((long)curX == i && (long)curY == j)	//if the free cell is reached, increase counter and stop the ray.
-	    {
-	      ++counter;
-	      //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
-	      hit = 1;
-	    }
-	    u += 0.2;		//move forward along the ray
-	  }
-	}
+        if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+        if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+        //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+        if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+        {
+          //raycounter++;
+          //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+          int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+          double u = 0;			//current position along the ray
+          while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+          {
+
+            //convert the position on the ray to cell coordinates to check the grid
+            curY = robotY + 0.5 + u*cos(slope);
+            curX = robotX + 0.5 - u*sin(slope);
+
+            //not needed, but left anyway
+            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols())
+            {
+              hit = 1;
+              //break;
+            }
+
+            if(map.getGridValue((long)curX, (long)curY) == 1)
+            {
+              hit = 1;		//hit set to 1 if an obstacle is found
+              //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+            }
+
+            if((long)curX == i && (long)curY == j)	//if the free cell is reached, increase counter and stop the ray.
+            {
+              ++counter;
+              //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
+              hit = 1;
+            }
+            u += 0.2;		//move forward along the ray
+          }
+        }
       }
     }
   }
   //std::cout << "Number of rays: " << raycounter << std::endl;
   return counter;	//return the number of free cells
   
- // return this->informationGain;
+  // return this->informationGain;
 }
 
 int NewRay::setGridToPathGridScale(int value)
@@ -760,11 +760,11 @@ void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, lon
   int phiFound = 0;	//set to 1 if at least a cell can be scanned
   
   //set the correct FOV orientation
-  double startingPhi = orientation*PI/180 - FOV/2;	
+  double startingPhi = orientation*PI/180 - FOV/2;
   double endingPhi = orientation*PI/180 + FOV/2;
   int add2pi = 0;
   
-  if(startingPhi <= 0) 
+  if(startingPhi <= 0)
   {
     add2pi = 1;
     startingPhi = 2*PI + startingPhi;
@@ -772,7 +772,7 @@ void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, lon
   }
   
   //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
-    
+
   //select the portion of map to be scanned
   long minI = posX - range;
   long maxI = posX + range;
@@ -795,75 +795,75 @@ void NewRay::calculateInfoGainSensingTime (const dummy::Map &map, long posX, lon
       //if a cell is free and within range of the robot, generate the ray connecting the robot cell and the free cell
       if(map.getGridValue(i, j) == 0 && distance <= range)
       {
-	double curX = posX;		//starting position of the ray
-	double curY = posY;
-	double robotX = posX;		//position of the robot
-	double robotY = posY;
-	
-	double convertedI = NewRay::convertPoint(i);
-	double convertedRX = NewRay::convertPoint(robotX);
+        double curX = posX;		//starting position of the ray
+        double curY = posY;
+        double robotX = posX;		//position of the robot
+        double robotY = posY;
 
-	double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
-	
-	if(slope <= 0 && add2pi == 0) slope = slope + 2*PI; 
-	if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
-	
-	//std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+        double convertedI = NewRay::convertPoint(i);
+        double convertedRX = NewRay::convertPoint(robotX);
 
-	if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
-	{
-	  //raycounter++;
-	  //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
-	  
-	  int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
-	  double u = 0;			//current position along the ray
-	  while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
-	  {
-	    
-	    //convert the position on the ray to cell coordinates to check the grid
-	    curY = robotY + 0.5 + u*cos(slope);
-	    curX = robotX + 0.5 - u*sin(slope);
-	    
-	    //not needed, but left anyway
-	    if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;        
-      
-	    if(map.getGridValue((long)curX, (long)curY) == 1) 
-	    {
-	      hit = 1;		//hit set to 1 if an obstacle is found
-	      //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
-	    }
+        double slope = atan2(NewRay::convertPoint(i) - NewRay::convertPoint(robotX), j - robotY);	//calculate the slope of the ray with atan2
 
-	    if((long)curX == i && (long)curY == j)	//if the free cell is reached, increase counter and stop the ray.
-	    {
-		++informationGain;
-		 if(phiFound == 0)		//enters if it is the first free cell found
-	      {
-		phiFound = 1;
-		minPhi = slope;
-		maxPhi = slope;
-	      }
-	      if(phiFound == 1)
-	      {
-		if(slope < minPhi) minPhi = slope;
-		if(slope > maxPhi) maxPhi = slope;
-	      }
-	      
-		
-	      //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
-	      hit = 1;
-	    }
-	    u += 0.2;		//move forward along the ray
-	  }
-	}
+        if(slope <= 0 && add2pi == 0) slope = slope + 2*PI;
+        if(add2pi == 1) slope = 2*PI + slope;		//needed in case of FOV spanning from negative to positive angle values
+
+        //std::cout << std::endl << "StartingPhi: " << startingPhi << " EndingPhi: " << endingPhi <<std::endl;
+
+        if(slope >= startingPhi && slope <= endingPhi)	//only cast the ray if it is inside the FOV of the robot
+        {
+          //raycounter++;
+          //std::cout << "Inside loop, slope: " << slope  << " Cell: " << j << " " << i << std::endl;
+
+          int hit = 0;			//set to 1 when obstacle is hit by ray or when the cell is reached in order to stop the ray
+          double u = 0;			//current position along the ray
+          while(hit == 0)		//scan the map along the ray until an ostacle is found or the considered cell is reached
+          {
+
+            //convert the position on the ray to cell coordinates to check the grid
+            curY = robotY + 0.5 + u*cos(slope);
+            curX = robotX + 0.5 - u*sin(slope);
+
+            //not needed, but left anyway
+            if(curX < 0 || curX > map.getNumGridRows() || curY < 0 || curY > map.getNumGridCols()) hit = 1;
+
+            if(map.getGridValue((long)curX, (long)curY) == 1)
+            {
+              hit = 1;		//hit set to 1 if an obstacle is found
+              //std::cout << "HIT! cell: " << j << " " << i << " Hit point: " << curY << " " << curX << std::endl;
+            }
+
+            if((long)curX == i && (long)curY == j)	//if the free cell is reached, increase counter and stop the ray.
+            {
+              ++informationGain;
+              if(phiFound == 0)		//enters if it is the first free cell found
+              {
+                phiFound = 1;
+                minPhi = slope;
+                maxPhi = slope;
+              }
+              if(phiFound == 1)
+              {
+                if(slope < minPhi) minPhi = slope;
+                if(slope > maxPhi) maxPhi = slope;
+              }
+
+
+              //std::cout << "Cell scanned: " << (int)curY << " " << (int)curX << std::endl;
+              hit = 1;
+            }
+            u += 0.2;		//move forward along the ray
+          }
+        }
       }
     }
   }
   
   if(phiFound == 0) sensingTime = -1;		//return -1 if no free cells can be scanned
   else 					//return the correct FOV (ALWAYS CENTERED ON THE ORIENTATION)
-  { 
+  {
     if(minPhi - startingPhi <= endingPhi - maxPhi) sensingTime = (endingPhi - startingPhi - 2*(minPhi - startingPhi));
-	else sensingTime = (endingPhi - startingPhi - 2*(endingPhi - maxPhi));
+    else sensingTime = (endingPhi - startingPhi - 2*(endingPhi - maxPhi));
   }
 
 }

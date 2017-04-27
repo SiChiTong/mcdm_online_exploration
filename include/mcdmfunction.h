@@ -21,7 +21,7 @@ public:
     pair< Pose, double > selectNewPose(EvaluationRecords* evaluationRecords);
     string getEncodedKey(Pose& p, int value);
     EvaluationRecords* evaluateFrontiersVec(const std::vector< Pose >& frontiers,  Map& map,double threshold);
-    
+
 protected:
 
     Criterion * createCriterion(string name, double weight);        

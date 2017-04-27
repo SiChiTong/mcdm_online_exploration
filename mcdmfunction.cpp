@@ -232,6 +232,3 @@ string MCDMFunction::getEncodedKey(Pose& p, int value)
     return key;
 }
 
-
-
-
